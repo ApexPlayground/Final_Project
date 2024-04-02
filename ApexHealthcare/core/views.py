@@ -38,8 +38,38 @@ def registerUser(request):
         user = User.objects.create(username=username, email=email, password=password)
         user.save()  
         messages.success(request, 'Account Was Created Successfully')
-        
-# Note: The code to create and save the user to the database is missing. 
-# You need to add that logic here.
+        return redirect('reg')
+    else:
+        messages.error(request, 'Failed To Register User')
+        return redirect('reg')
+    
 
-# End of the registerUser view function
+def loginView(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username = username, password = password)
+        if user is not None and user.is_active:
+            auth.login(request, user)
+            if user.is_patient:
+                return redirect('patient')
+            elif user.is_doctor:
+                return redirect('doctor')
+            else:
+                return redirect('login')
+        else:
+            messages.info(request, "Invalid Username Or Password")
+            return redirect('login')
+    else:
+        return render(request, 'login.html')
+    
+
+def hom_patient(request):
+    return render(request, 'patient/home.html')
+    
+
+        
+                
+        
+        
+        
