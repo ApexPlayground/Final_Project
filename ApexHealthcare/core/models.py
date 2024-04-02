@@ -12,11 +12,11 @@ class User(AbstractUser):
 # Medical model to store medical records and prescriptions
 class Medical(models.Model):
     # Symptoms fields
-    symptom1 = models.CharField(max_length=200)
-    symptom2 = models.CharField(max_length=200)
-    symptom3 = models.CharField(max_length=200)
-    symptom4 = models.CharField(max_length=200)
-    symptom5 = models.CharField(max_length=200)
+    s1 = models.CharField(max_length=200)
+    s2 = models.CharField(max_length=200)
+    s3 = models.CharField(max_length=200)
+    s4 = models.CharField(max_length=200)
+    s5 = models.CharField(max_length=200)
     
     disease = models.CharField(max_length=200)  # Field to store the diagnosed disease
     medicine = models.CharField(max_length=200)  # Field to store prescribed medicine

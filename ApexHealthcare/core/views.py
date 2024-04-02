@@ -35,7 +35,7 @@ def registerUser(request):
         password = make_password(password)
         
          # Create the user
-        user = User.objects.create(username=username, email=email, password=password)
+        user = User.objects.create(username=username, email=email, password=password, is_patient = True)
         user.save()  
         messages.success(request, 'Account Was Created Successfully')
         return redirect('reg')
@@ -45,26 +45,26 @@ def registerUser(request):
     
 
 def loginView(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username = username, password = password)
-        if user is not None and user.is_active:
-            auth.login(request, user)
-            if user.is_patient:
-                return redirect('patient')
-            elif user.is_doctor:
-                return redirect('doctor')
-            else:
-                return redirect('login')
-        else:
-            messages.info(request, "Invalid Username Or Password")
-            return redirect('login')
-    else:
-        return render(request, 'login.html')
+	if request.method == 'POST':
+		username = request.POST['username']
+		password = request.POST['password']
+		user = authenticate(request, username=username, password=password)
+		if user is not None and user.is_active:
+			auth.login(request, user)
+			if user.is_patient:
+				return redirect('patient')
+			elif user.is_doctor:
+				return redirect('doctor')
+			else:
+				return redirect('login')
+		else:
+			messages.info(request, "Invalid Username Or Password")
+			return redirect('login')
+	else:
+		return render(request, 'login.html')		
     
 
-def hom_patient(request):
+def patient_home(request):
     return render(request, 'patient/home.html')
     
 
