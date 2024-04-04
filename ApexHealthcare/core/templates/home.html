@@ -12,189 +12,170 @@
     <link href="{% static 'core/css/bootstrap.css' %}" rel="stylesheet" />
     <link href="{% static 'core/css/themify-icons.css' %}" rel="stylesheet" />
     <link href="{% static 'core/css/flaticon.css' %}" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
     <link href="{% static 'core/vendors/fontawesome/css/all.min.css' %}" rel="stylesheet" />
 
     <link href="{% static 'core/owl-carousel/owl.carousel.min.css' %}" rel="stylesheet" />
     <link href="{% static 'core/nimate-css/animate.css' %}" rel="stylesheet" />
-    <link href="{% static 'core/css/style.css' %}" rel="stylesheet" />
+    <!-- <link href="{% static 'core/css/style.css' %}" rel="stylesheet" /> -->
     <link href="{% static 'core/css/esponsive.css' %}" rel="stylesheet" />
   </head>
-  <body>
+  <body data-bs-spy="scroll" data-bs-target=".banner-area" data-bs-offset="100">
     <!-- ================Header Menu Area ================= -->
     <header class="header_area">
-      <div class="top_menu row m0"></div>
-      <div class="main_menu mt-3">
-        <nav class="navbar navbar-expand-lg navbar-light">
-          <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <a class="navbar-brand logo_h" href="index.html"><img src="{% static 'core/img/logo.png' %}" alt="" /></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
-              <ul class="nav navbar-nav menu_nav ml-auto">
-                <li class="nav-item">
-                  <a class="nav-link" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="">About</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="">Doctors</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'reg' %}">Register</a>
-                </li>
+      <div class="top_menu row m-0"></div>
 
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'login' %}">Login</a>
-                </li>
-              </ul>
-            </div>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-5">
+        <div class="container">
+          <a class="navbar-brand logo_h" href="/"><h1 class="mb-0">APEXMED</h1></a>
+
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 navList">
+              <li class="nav-item me-lg-3">
+                <a class="nav-link" href="/">Home</a>
+              </li>
+              <li class="nav-item me-lg-3">
+                <a class="nav-link" href="">About</a>
+              </li>
+              <li class="nav-item me-lg-3">
+                <a class="nav-link" href="">Doctors</a>
+              </li>
+              <li class="nav-item me-lg-3">
+                <a class="nav-link" href="{% url 'reg' %}">Register</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Login</a>
+              </li>
+            </ul>
           </div>
-        </nav>
-      </div>
+        </div>
+      </nav>
     </header>
 
     <!-- ================Header Menu Area ================= -->
 
     <!-- ================Home Banner Area ================= -->
 
-    <section class="banner-area d-flex align-items-center">
+    <section class="banner-area d-flex align-items-center text-light bg-dark pt-5">
       <div class="container">
-        <div class="row">
-          <div class="col-md-8 col-lg-6 col-xl-5">
-            <h1>
-              Making Health<br />
-              Care Better
-            </h1>
-            <p>Apex Health Solutions delivers outstanding patient care with machine learning-based sickness diagnosis and accurate drug recommendations, ensuring precise and effective treatments.</p>
-            <a href="" class="main_btn rounded">Make an Appointment</a>
-            <a href="" class="main_btn_light rounded">View Department</a>
+        <div class="row align-items-center">
+          <div class="col-md-auto col-lg-6 col-xl-5">
+            <h1 class="mb-4 bannerHead">Making Health Care Better</h1>
+            <p class="bannerText">At ApexMed, we're shaping the future of healthcare with innovative solutions. Our platform serves as your intelligent medical partner, providing accurate diagnosis by using advanced predictive machine learning . Experience personalized care and embark on a journey towards better health, guided by our comprehensive and reliable services.</p>
+            <a href="{% url 'reg' %}" class="btn btn-light rounded-pill me-3">Use Service</a>
+          </div>
+          <div class="col-md-auto col-lg-6 col-xl-7 d-flex justify-content-center align-items-center">
+            <img src="../static/core/img/doc.png" alt="Doctor" class="img-fluid img-edit" />
           </div>
         </div>
       </div>
     </section>
+
+    <style>
+      .bannerHead {
+        font-size: 60px;
+        font-weight: 700;
+      }
+      p {
+        font-size: 18px;
+      }
+      .navList {
+        font-size: 19px;
+      }
+      .img-edit {
+        margin-top: -120px;
+        margin-left: 100px;
+      }
+      .edit2 {
+        height: 600px;
+      }
+      .aiImg {
+        margin-right: 150px;
+      }
+      .aboutHead {
+        font-size: 45px;
+        font-weight: 700;
+      }
+    </style>
 
     <!-- ================End Home Banner Area ================= -->
 
     <!-- ================About Area ================= -->
-    <section class="about-area">
+    <section class="banner-area d-flex align-items-center text-dark bg-light pt-5">
       <div class="container">
         <div class="row align-items-center">
-          <div class="col-md-10 offset-md-1 col-lg-6 offset-lg-6 offset-xl-7 col-xl-5">
+          <!-- Image Column -->
+          <div class="col-md-auto col-lg-6 col-xl-5 aiImg">
+            <img src="../static/core/img/ai.png" alt="ai robot" class="edit2" />
+          </div>
+
+          <!-- Content Column -->
+          <div class="col-md-auto col-lg-6 col-xl-5">
             <div class="about-content">
-              <h4>
+              <h2 class="mb-4 aboutHead">
                 Revolutionizing Healthcare <br />
                 with Predictive Sickness Analysis
-              </h4>
-              <p>Experience the future of healthcare with our innovative predictive analysis technology.</p>
-
-              <a class="link_one" href="#">learn more</a>
+              </h2>
+              <p class="mb-4">ApexMed is passionate about reshaping the healthcare experience for everyone. Our goal is simple: to provide accessible, free personalized healthcare solutions that is useful to the masses. With our predictive sickness analysis technology, we're helping people make more informed decisions about their health. Join us on our mission to redefine healthcare and make a real difference in people's lives.</p>
+              <a href="#" class="btn btn-dark">Learn More</a>
             </div>
           </div>
         </div>
       </div>
     </section>
+
     <!-- ================About Area End ================= -->
 
-    <!-- start footer Area -->
-    <footer class="footer-area area-padding-top">
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-5">
       <div class="container">
         <div class="row">
-          <div class="col-lg-2 col-sm-6 single-footer-widget">
-            <h4>Top Products</h4>
-            <ul>
-              <li>
-                <a href="#">Managed Website</a>
-              </li>
-              <li>
-                <a href="#">Manage Reputation</a>
-              </li>
-              <li>
-                <a href="#">Power Tools</a>
-              </li>
-              <li>
-                <a href="#">Marketing Service</a>
-              </li>
-            </ul>
+          <div class="col-md-3 mb-4">
+            <h5 class="mb-3">Top Products</h5>
           </div>
-          <div class="col-lg-2 col-sm-6 single-footer-widget">
-            <h4>Quick Links</h4>
-            <ul>
-              <li>
-                <a href="#">Jobs</a>
-              </li>
-              <li>
-                <a href="#">Brand Assets</a>
-              </li>
-              <li>
-                <a href="#">Investor Relations</a>
-              </li>
-              <li>
-                <a href="#">Terms of Service</a>
-              </li>
-            </ul>
+          <div class="col-md-3 mb-4">
+            <h5 class="mb-3">Quick Links</h5>
           </div>
-          <div class="col-lg-2 col-sm-6 single-footer-widget">
-            <h4>Features</h4>
-            <ul>
-              <li>
-                <a href="#">Jobs</a>
-              </li>
-              <li>
-                <a href="#">Brand Assets</a>
-              </li>
-              <li>
-                <a href="#">Investor Relations</a>
-              </li>
-              <li>
-                <a href="#">Terms of Service</a>
-              </li>
-            </ul>
+          <div class="col-md-3 mb-4">
+            <h5 class="mb-3">Features</h5>
           </div>
-          <div class="col-lg-2 col-sm-6 single-footer-widget">
-            <h4>Resources</h4>
-            <ul>
-              <li>
-                <a href="#">Guides</a>
-              </li>
-              <li>
-                <a href="#">Research</a>
-              </li>
-              <li>
-                <a href="#">Experts</a>
-              </li>
-              <li>
-                <a href="#">Agencies</a>
-              </li>
-            </ul>
+          <div class="col-md-3 mb-4">
+            <h5 class="mb-3">Resources</h5>
           </div>
-          <div class="col-lg-4 col-md-6 single-footer-widget">
-            <h4>Newsletter</h4>
+        </div>
+        {% comment %} <div class="row align-items-center justify-content-between mt-4">
+          <div class="col-md-6">
+            <h5>Newsletter</h5>
             <p>You can trust us. we only send promo offers,</p>
-            <div class="form-wrap" id="mc_embed_signup">
-              <form target="_blank" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01" method="get" class="form-inline">
-                <input class="form-control" name="EMAIL" placeholder="Your Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your Email Address'" required="" type="email" />
-                <button class="click-btn btn btn-default"><i class="ti-arrow-right"></i></button>
-                <div style="position: absolute; left: -5000px;">
-                  <input name="b_36c4fd991d266f23781ded980_aefe40901a" tabindex="-1" value="" type="text" />
-                </div>
-
-                <div class="info"></div>
-              </form>
-            </div>
+          </div>
+          <div class="col-md-6">
+            <form class="input-group">
+              <input type="email" class="form-control" placeholder="Your Email Address" aria-label="Your Email Address" aria-describedby="button-addon2" />
+              <button class="btn btn-primary" type="button" id="button-addon2">Subscribe</button>
+            </form>
+          </div>
+        </div> {% endcomment %}
+        <hr class="mt-5 mb-4" />
+        <div class="row">
+          <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+            <p class="m-0">
+              &copy; <span id="currentYear"></span> All rights reserved by <a href="#" class="text-light">APEXMED</a>.
+            </p>
+          </div>
+          <div class="col-md-6 text-center text-md-end">
+            <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-light me-3"><i class="fab fa-dribbble"></i></a>
+            <a href="#" class="text-light"><i class="fab fa-linkedin"></i></a>
           </div>
         </div>
       </div>
     </footer>
-    <!-- End footer Area -->
 
     <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
     <script src="{% static 'core/j/jquery-2.2.4.min.' %}"></script>
     <script src="{% static 'core/j/popper.' %}"></script>
     <script src="{% static 'core/j/bootstrap.min.' %}"></script>
@@ -208,5 +189,6 @@
     <script src="{% static 'core/j/jquery.validate.min.' %}"></script>
     <script src="{% static 'core/j/mail-script.' %}"></script>
     <script src="{% static 'core/j/theme.' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
