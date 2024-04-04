@@ -1,55 +1,69 @@
 {% extends 'patient/base.html' %}
 {% block body %}
   <div id="content-wrapper">
-    <div class="container-fluid">
-      <div class="row justify-content-center">
-        <div class="col-md-4 mb-4">
-          <div class="alert alert-success">
-            <div class="card-body">
-              <p class="card-text">
-                Currently logged in as <span class="fw-bold text-danger">{{ user.username }}</span>
-              </p>
-            </div>
-          </div>
-        </div>
-
+    <div class="container">
+      <div class="justify-content-center">
         {% if status == '1' %}
-          <div class="col-md-4 mb-4">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Make Diagnosis</h5>
-                <p class="card-text">Start a new diagnosis process.</p>
-                <a href="{% url 'diagnosis' %}" class="btn btn-primary">Make Diagnosis</a>
-              </div>
+          <div class="text-center mx-auto w-50">
+            <h1 class="font-weight-bold mb-5">Hello <span class="text-success">{{ user.username }}</span></h1>
+            <div class="mb-5">
+              <a href="{% url 'diagnosis' %}" class="card-link">
+                <div class="card p-3">
+                  <div class="card-body">
+                    <h5 class="card-title">Make Prediction</h5>
+                    <p class="card-text">Click to make prediction</p>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div class="mb-5">
+              <a href="{% url 'result' %}" class="card-link">
+                <div class="card p-3">
+                  <div class="card-body">
+                    <h5 class="card-title">Prediction Results</h5>
+                    <p class="card-text">View your prediction results.</p>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div class="mb-">
+              <a href="{% url 'appointment_list' %}" class="card-link">
+                <div class="card p-3">
+                  <div class="card-body">
+                    <h5 class="card-title">Appointments</h5>
+                    <p class="card-text">Manage your appointments.</p>
+                  </div>
+                </div>
+              </a>
             </div>
           </div>
 
-          <div class="col-md-4 mb-4">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Diagnosis Results</h5>
-                <p class="card-text">View your diagnosis results.</p>
-                <a href="{% url 'result' %}" class="btn btn-primary">View Results</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4 mb-4">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Appointment</h5>
-                <p class="card-text">Manage your appointments.</p>
-                <a href="{% url 'appointment_list' %}" class="btn btn-primary">View Appointments</a>
-              </div>
-            </div>
-          </div>
+          <style>
+            .card-link {
+              text-decoration: none;
+            }
+            
+            .card-link:hover .card {
+              box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+              transform: translateY(-5px);
+            }
+          </style>
         {% else %}
-          <div class="col-md-4 mb-4">
+          <div class="text-center mb-3">
+            <h1 class="display-4 font-weight-600">Hello {{ user.username }}</h1>
+
+            <p class="lead">
+              It looks like you haven't created your profile yet.<br /> Let's get started to personalize your ApexMed experience!
+            </p>
+          </div>
+          <div class="col-md-4 mb-4 text-center">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">User Profile</h5>
-                <p class="card-text">Create or update your user profile.</p>
-                <a href="{% url 'create_profile' %}" class="btn btn-primary">Create Profile</a>
+                <h5 class="card-title">Create Your Profile</h5>
+                <p class="card-text">Help us tailor our services to you by providing some basic information.</p>
+                <a href="{% url 'create_profile' %}" class="btn btn-primary">Get Started</a>
               </div>
             </div>
           </div>
@@ -57,10 +71,8 @@
       </div>
 
       {% if profile_status %}
-        <div class="row justify-content-center">
-          <div class="col-md-8">
-            <h2 class="text-center text-danger">{{ profile_status }}</h2>
-          </div>
+        <div class="justify-content-center">
+          <P class="text-center text-danger">{{ profile_status }}</P>
         </div>
       {% endif %}
 

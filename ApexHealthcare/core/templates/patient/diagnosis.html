@@ -2,110 +2,62 @@
 {% load static %}
 
 {% block body %}
+  <div id="content-wrapper">
+    <div class="container-fluid">
+      <!-- Icon Cards -->
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h2 class="text-center bg-primary rounded p-4">Disease Prediction</h2>
 
- <div id="content-wrapper">
+              <form method="POST" action="" class="myform">
+                {% csrf_token %}
 
-        <div class="container-fluid">
+                <datalist id="symp">
+                  {% for symp in symptoms %}
+                    <option value="{{ symp }}">{{ symp }}</option>
+                  {% endfor %}
+                </datalist>
 
+                <input type="hidden" value="{{ user.id }}" name="" id="user_id" />
 
-            <!-- Icon Cards-->
-            <div class="row">
+                <div class="mb-3">
+                  <label for="Symptom1" class="form-label fw-bold">First Symptom</label>
+                  <input type="text" class="form-control" list="symp" name="Symptom1" id="Symptom1" placeholder="Please Choose Symptom" required="" />
+                </div>
 
+                <div class="mb-3">
+                  <label for="Symptom2" class="form-label fw-bold">Second Symptom</label>
+                  <input type="text" class="form-control" list="symp" name="Symptom2" id="Symptom2" placeholder="Please Choose Symptom" required="" />
+                </div>
 
-                <div class="card-body">
+                <div class="mb-3">
+                  <label for="Symptom3" class="form-label fw-bold">Third Symptom</label>
+                  <input type="text" class="form-control" list="symp" name="Symptom3" id="Symptom3" placeholder="Please Choose Symptom" required="" />
+                </div>
 
-        <h4 class="text-center alert alert-info">Disease Prediction Panel</h4>
+                <div class="mb-3">
+                  <label for="Symptom4" class="form-label fw-bold">Forth Symptom</label>
+                  <input type="text" class="form-control" list="symp" name="Symptom4" id="Symptom4" placeholder="Please Choose Symptom" required="" />
+                </div>
 
-<!--
-    <h5 class="card-title text-primary">Please Fill In Your Symptoms</h5>
--->
-<br>
+                <div class="mb-3">
+                  <label for="Symptom5" class="form-label fw-bold">Fifth Symptom</label>
+                  <input type="text" class="form-control" list="symp" name="Symptom5" id="Symptom5" placeholder="Please Choose Symptom" required="" />
+                </div>
 
-
-    <form method="POST" action="" class="myform">
-      {% csrf_token %}
-
-      <input type="hidden"  value="{{ user.id }}" name="" id="user_id">
-    <div class="form-group row">
-        <label for="Symptom" class="col-sm-2 col-form-label">1st Symptom</label>
-        <div class="col-sm-6">
-           <input type="text" class="form-control" list="symp" multiple="multiple" name="Symptom1" id="Symptom1" placeholder="Please Choose Symptom" required="">
+                <div class="text-center">
+                  <button type="button" class="btn btn-primary" id="predict_btn">Predict</button>
+                </div>
+              </form>
+              <div class="alert alert-info mt-3" role="alert">
+                <div id="result" class="text-center mt-3 fw-bold"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <datalist id="symp">
-          {% for symp in symptoms %}
-          <option value= "{{symp}}">{{symp}}</option>
-        {% endfor %}
-      </datalist>
+      </div>
     </div>
-
-     <div class="form-group row">
-        <label for="Symptom2" class="col-sm-2 col-form-label">2nd Symptom</label>
-        <div class="col-sm-6">
-            <input type="text" class="form-control" list="symp" name="Symptom2" id="Symptom2" placeholder="Please Choose Symptom" required="">
-        </div>
-        <datalist id="symp">
-          {% for symp in symptoms %}
-          <option value= "{{symp}}">{{symp}}</option>
-        {% endfor %}
-      </datalist>
-    </div>
-
-     <div class="form-group row">
-        <label for="Symptom3" class="col-sm-2 col-form-label">3rd Symptom</label>
-        <div class="col-sm-6">
-            <input type="text" class="form-control" list="symp" name="Symptom3" id="Symptom3" placeholder="Please Choose Symptom" required="">
-        </div>
-        <datalist id="symp">
-          {% for symp in symptoms %}
-          <option value= "{{symp}}">{{symp}}</option>
-        {% endfor %}
-      </datalist>
-    </div>
-
-     <div class="form-group row">
-        <label for="Symptom4" class="col-sm-2 col-form-label">4th Symptom</label>
-        <div class="col-sm-6">
-            <input type="text" class="form-control" multiple="multiple" list="symp" id="Symptom4" name="Symptom4" placeholder="Please Choose Symptom" required="">
-        </div>
-        <datalist id="symp">
-          {% for symp in symptoms %}
-          <option value= "{{symp}}">{{symp}}</option>
-        {% endfor %}
-      </datalist>
-    </div>
-
-
-     <div class="form-group row">
-        <label for="Symptom5" class="col-sm-2 col-form-label">5th Symptom</label>
-        <div class="col-sm-6">
-            <input type="text" class="form-control" list="symp" id="Symptom5" name="Symptom5" placeholder="Please Choose Symptom" required="">
-        </div>
-        <datalist id="symp">
-          {% for symp in symptoms %}
-          <option value= "{{symp}}">{{symp}}</option>
-        {% endfor %}
-      </datalist>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-sm-10 offset-sm-2">
-            <button type="button" class="btn btn-primary" id="predict_btn">Predict</button>
-        </div>
-    </div>
-
-
-
-<div id="result" class="col-sm-10 offset-sm-3"></div>
- 
-
-</form>
-</div>
-
-</div>
-</div>
-</div>
-
-
-
-
+  </div>
 {% endblock %}

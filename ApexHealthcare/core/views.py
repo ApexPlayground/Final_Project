@@ -75,7 +75,7 @@ def patient_home(request):
 	user_id = request.user.id
 	user_profile = Profile.objects.filter(user_id=user_id)
 	if not user_profile:
-		context = {'profile_status':'Please Create Profile To Continue', 'doctor':doctor, 'appointment':appointment, patient:'patient', 'drug':medical3}
+		context = {'profile_status':'YOU HAVE TO CREATE PROFILE TO USE OUR SERVICES', 'doctor':doctor, 'appointment':appointment, patient:'patient', 'drug':medical3}
 		return render(request, 'patient/home.html', context)
 	else:
 		context = {'status':'1', 'doctor':doctor, 'appointment':appointment, patient:'patient', 'drug':medical3}
@@ -89,7 +89,7 @@ def create_profile(request):
 		gender = request.POST['gender']
 		user_id = request.user.id
 
-		Profile.objects.filter(id = user_id).create(user_id=user_id, birth_date=birth_date, gender=gender, region=region)
+		Profile.objects.filter(id = user_id).create(user_id=user_id, birth_date=birth_date, gender=gender,country=country, region=region)
 		messages.success(request, 'Your Profile Was Created Successfully')
 		return redirect('patient')
 	else:
