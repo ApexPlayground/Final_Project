@@ -30,8 +30,11 @@
             x = data.status
             console.log('Data Sent To The Backend')
             console.log('Predicted Disease', x)
-            $('#result').html('')
-            $('#result').append('There Are Chances You Have ' + x)
+            if (x) {
+              $('#result').html('<div class="alert alert-success" role="alert">There Are Chances You Have ' + x + '</div>')
+            } else {
+              $('#result').html('<div class="alert alert-warning" role="alert">No Disease Prediction Available</div>')
+            }
           }
         })
       }
@@ -58,14 +61,11 @@
           console.log('Appointment Status Is ', x)
   
           if (x == 'saved') {
-            $('#ment_result').html('')
-            $('#ment_result').append('Appointment Was Successfully Requested')
+            $('#appointment_result').html('<div class="alert alert-success" role="alert">Appointment Was Successfully Requested</div>')
           } else if (x == 'exist') {
-            $('#ment_result').html('')
-            $('#ment_result').append('Appointment Request Exist')
+            $('#appointment_result').html('<div class="alert alert-warning" role="alert">Appointment Request Exist</div>')
           } else {
-            $('#ment_result').html('')
-            $('#ment_result').append('Something Went Wrong')
+            $('#appointment_result').html('<div class="alert alert-danger" role="alert">Something Went Wrong</div>')
           }
         }
       })

@@ -28,7 +28,7 @@
               </a>
             </div>
 
-            <div class="mb-">
+            <div class="">
               <a href="{% url 'appointment_list' %}" class="card-link">
                 <div class="card p-3">
                   <div class="card-body">
@@ -51,14 +51,14 @@
             }
           </style>
         {% else %}
-          <div class="text-center mb-3">
+          <div class="text-center mb-3 mt-5">
             <h1 class="display-4 font-weight-600">Hello {{ user.username }}</h1>
 
-            <p class="lead">
+            <p class="lead mb-5">
               It looks like you haven't created your profile yet.<br /> Let's get started to personalize your ApexMed experience!
             </p>
           </div>
-          <div class="col-md-4 mb-4 text-center">
+          <div class="mb-4 w-50 mx-auto text-center">
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">Create Your Profile</h5>

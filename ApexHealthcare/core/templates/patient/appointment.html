@@ -1,71 +1,49 @@
-{% extends 'patient/base.html' %} {% block body %}
+{% extends 'patient/base.html' %}
 
-<div id="content-wrapper">
-  <div class="container-fluid">
-    <!-- Breadcrumbs-->
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item">
-        <a href="">Appointment Panel</a>
-      </li>
-    </ol>
+{% block body %}
+  <div id="content-wrapper">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-10">
+          <h4 class="bg-primary p-4 rounded text-center" role="alert">List Of Diagnosed Diseases</h4>
 
-    <!-- Icon Cards-->
-    <div class="row">
-      <div class="col-sm-8">
-        <h4 class="text-center alert alert-info">List Of Disease Diagnosed</h4>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Patient</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Day</th>
+                  <th scope="col">Time</th>
+                  <th scope="col">Doctor</th>
+                  <th scope="col">Doctor Contact</th>
+                </tr>
+              </thead>
+              <tbody>
+                <input type="hidden" value="{{ user.id }}" name="" id="user_id" />
 
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Id</th>
-              <th scope="col">Patient</th>
-              <th scope="col">Status</th>
-              <th scope="col">Day</th>
-              <th scope="col">Time</th>
-              <th scope="col">Doctor</th>
-              <th scope="col">Doctor Contact</th>
-            </tr>
-          </thead>
-          <tbody>
-            <input type="hidden" value="{{ user.id }}" name="" id="user_id" />
+                {% for d in appointment %}
+                  <tr>
+                    <td class="d-none">{{ d.id }}</td>
+                    <td>{{ d.patient.username }}</td>
+                    {% if not d.approved %}
+                      <td>Pending</td>
+                    {% else %}
+                      <td>Approved</td>
+                    {% endif %}
+                    <td>{{ d.appointment_day|default:'Not Set'|date:'M d, Y' }}</td>
+                    <td>{{ d.time|default:'Not Set' }}</td>
+                    <td>{{ d.doctor.username|default:'None' }}</td>
+                    <td>{{ d.doctor.phonenumber|default:'None' }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
 
-            {% for d in appointment %}
-            <tr>
-              <td>{{ d.id }}</td>
-
-              <td>{{ d.patient.username }}</td>
-
-              {% if d.approved == False %}
-              <td>Pending</td>
-              {% else %}
-              <td>{{ d.medicine }}</td>
-              {% endif %} {% if d.appointment_day == None %}
-              <td>Not Set</td>
-              {% else %}
-              <td>{{ d.appointmentt_day|date:"M d, Y" }}</td>
-              {% endif %} {% if d.time == None %}
-              <td>Not Set</td>
-              {% else %}
-              <td>{{ d.time }}</td>
-              {% endif %} {% if d.doctor.username == Null %}
-              <td>None</td>
-              {% else %}
-              <td>{{ d.doctor.username }}</td>
-              {% endif %} {% if d.doctor.phonenumber == Null %}
-              <td>None</td>
-              {% else %}
-              <td>{{ d.doctor.phonenumber }}</td>
-              {% endif %}
-            </tr>
-
-            {% endfor %}
-          </tbody>
-        </table>
-
-        <div id="appointment_result" class="col-sm-10 offset-sm-3"></div>
+          <div id="appointment_result"></div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
 {% endblock %}
