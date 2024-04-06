@@ -61,7 +61,8 @@ def loginView(request):
 			messages.info(request, "Invalid Username Or Password")
 			return redirect('login')
 	else:
-		return render(request, 'login.html')		
+		return render(request, 'login.html')	
+		
     
 
 def patient_home(request):
