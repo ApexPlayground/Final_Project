@@ -14,7 +14,7 @@
               {% csrf_token %}
               <div class="mb-3">
                 <label for="birth_date" class="form-label">Date of Birth</label>
-                <input type="date" id="birth_date" class="form-control" name="birth_date" min="1950-01-01" max="2021-12-12" required />
+                <input type="date" id="birth_date" class="form-control" name="birth_date" required />
               </div>
               <div class="mb-3">
                 <label for="gender" class="form-label">Gender</label>
@@ -28,10 +28,7 @@
                 <label for="country" class="form-label">Country</label>
                 <input type="text" class="form-control" id="country" name="country" placeholder="Country" required />
               </div>
-              <div class="mb-3">
-                <label for="region" class="form-label">Region</label>
-                <input type="text" class="form-control" id="region" name="region" placeholder="Region" required />
-              </div>
+
               <button type="submit" class="btn btn-success btn-lg btn-block">Save</button>
             </form>
           </div>

@@ -1,13 +1,24 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model
+from django.utils.crypto import get_random_string
 
 # Custom User model with additional fields for patient and doctor roles
 class User(AbstractUser):
     is_patient = models.BooleanField(default=False)  # is a patient
     is_doctor = models.BooleanField(default=False)  # is a doctor
     phonenumber = models.CharField(max_length=200, null=True)  # Phone number
+    email_verified = models.BooleanField(default=False)  # Email verification status
+    email_otp = models.CharField(max_length=6, blank=True, null=True)
+    otp_created_at = models.DateTimeField(blank=True, null=True)
+    verification_token = models.CharField(max_length=100, blank=True, editable=False)  # Email verification token
+
+    
+    def save(self, *args, **kwargs):
+        if not self.verification_token:
+            # Generate a unique verification token
+            self.verification_token = get_random_string(length=32)
+        super(User, self).save(*args, **kwargs)
 
 # Medical model to store medical records and prescriptions
 class Medical(models.Model):
@@ -55,7 +66,6 @@ class Profile(models.Model):
     # Field to store the user's avatar image
     avatar = models.ImageField(upload_to='', default='profile/avatar.png', blank=True) 
     birth_date = models.DateField(default='None')  # Field to store the user's birth date
-    region = models.CharField(max_length=255, default='')  # Field to store the user's region
     gender = models.CharField(max_length=255)  # Field to store the user's gender
     # Field to store the user's country, default is set to Ireland
     country = models.CharField(max_length=255, default='Ireland')  
