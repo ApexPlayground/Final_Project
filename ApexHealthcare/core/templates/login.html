@@ -2,7 +2,7 @@
 {% block body %}
   <div class="container">
     <div class="row justify-content-center mt-5">
-      <div class="col-md-6">
+      <div class="col-lg-6">
         <div class="card border-0 shadow">
           <div class="card-body p-5">
             <h4 class="text-center mb-4">Good to see you again</h4>
@@ -24,7 +24,7 @@
               {% if messages %}
                 <div class="messages">
                   {% for message in messages %}
-                    <div class="alert alert-danger" role="alert">{{ message }}</div>
+                    <div class="alert alert-primary text-center" role="alert">{{ message }}</div>
                   {% endfor %}
                 </div>
               {% endif %}

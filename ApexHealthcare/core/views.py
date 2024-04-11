@@ -34,12 +34,42 @@ def registerView(request):
 
 
 
+# def registerUser(request):
+#     if request.method == 'POST':
+#         form = UserRegistrationForm(request.POST)
+#         if form.is_valid():
+#             user = form.save(commit=False)
+#             user.set_password(form.cleaned_data['password'])
+#             user.is_patient = True
+#             user.is_active = False  # Keep user inactive until email is verified
+#             # Generate OTP
+#             user.email_otp = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+#             user.otp_created_at = timezone.now()
+#             user.save()
+#             # Send OTP via email
+#             send_mail(
+#                 'Your Email Verification OTP',
+#                 f'Your OTP is: {user.email_otp}',
+#                 settings.EMAIL_HOST_USER,
+#                 [user.email],
+#                 fail_silently=False,
+#             )
+            
+#             # Redirect to OTP verification page
+#             return redirect('verify_otp_page', user_id=user.id)  
+#         else:
+#             for field, errors in form.errors.items():
+#                 for error in errors:
+#                     messages.error(request, error)
+#             return redirect('reg')
+        
 def registerUser(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
+            user.phonenumber = form.cleaned_data['phonenumber']  # Save the phonenumber from the form
             user.is_patient = True
             user.is_active = False  # Keep user inactive until email is verified
             # Generate OTP
@@ -54,7 +84,7 @@ def registerUser(request):
                 [user.email],
                 fail_silently=False,
             )
-            messages.success(request, 'Please check your email for the OTP to activate your account.')
+            
             # Redirect to OTP verification page
             return redirect('verify_otp_page', user_id=user.id)  
         else:
@@ -62,6 +92,7 @@ def registerUser(request):
                 for error in errors:
                     messages.error(request, error)
             return redirect('reg')
+        
     
 def verify_otp(request, user_id):
     user = get_object_or_404(User, id=user_id)
@@ -103,7 +134,7 @@ def loginView(request):
                     else:
                         return redirect('home')  # or some 
                 else:
-                    messages.error(request, "Account is inactive. Please contact support.")
+                    messages.info(request, "Account is inactive. Please enter otp to activate .")
                     return redirect('login')
             else:
                 messages.error(request, "Invalid credentials. Please try again.")
