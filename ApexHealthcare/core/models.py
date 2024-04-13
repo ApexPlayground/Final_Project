@@ -22,19 +22,23 @@ class User(AbstractUser):
 
 # Medical model to store medical records and prescriptions
 class Medical(models.Model):
-    # Symptoms fields
     s1 = models.CharField(max_length=200)
     s2 = models.CharField(max_length=200)
     s3 = models.CharField(max_length=200)
     s4 = models.CharField(max_length=200)
     s5 = models.CharField(max_length=200)
-    
-    disease = models.CharField(max_length=200)  # Field to store the diagnosed disease
-    medicine = models.CharField(max_length=200)  # Field to store prescribed medicine
-    
-    patient = models.ForeignKey(User, related_name="medical_history", on_delete=models.CASCADE)  # ForeignKey for patient
-    doctor = models.ForeignKey(User, related_name="prescriptions", on_delete=models.CASCADE, null=True)  # ForeignKey for doctor
-    created_on = models.DateTimeField(auto_now_add=True)  # Field to store the creation date of the record
+    disease = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+    diet = models.TextField(blank=True, null=True)
+    medication = models.TextField(blank=True, null=True)
+    precaution = models.TextField(blank=True, null=True)
+    patient = models.ForeignKey(User, related_name="medical_history", on_delete=models.CASCADE)
+    doctor = models.ForeignKey(User, related_name="prescriptions", on_delete=models.CASCADE, null=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.disease
+
 
     def __str__(self):
         return self.disease  # String representation of the Medical record, returns the disease name

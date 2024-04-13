@@ -17,17 +17,19 @@
       console.log(s5)
       console.log(id)
   
-      if (s1 === '' || s2 === '' || s3 === '' || s4 === '' || s5 === '') {
-        alert('Please fill in all symptoms')
+      // Count non-empty symptoms
+      var symptomCount = [s1, s2, s3, s4, s5].filter((symptom) => symptom !== '').length
+  
+      if (symptomCount < 3) {
+        alert('Please fill in at least three symptoms')
       } else {
-        mydata = { id: id, s2: s2, s3: s3, s4: s4, s5: s5, s1: s1 }
+        var mydata = { id: id, s1: s1, s2: s2, s3: s3, s4: s4, s5: s5 }
         $.ajax({
           url: "{% url 'predict' %}",
           method: 'POST',
           data: mydata,
-  
           success: function (data) {
-            x = data.status
+            var x = data.status
             console.log('Data Sent To The Backend')
             console.log('Predicted Disease', x)
             if (x) {
@@ -35,6 +37,9 @@
             } else {
               $('#result').html('<div class="alert alert-warning" role="alert">No Disease Prediction Available</div>')
             }
+          },
+          error: function (xhr, status, error) {
+            console.log('Error:', error)
           }
         })
       }

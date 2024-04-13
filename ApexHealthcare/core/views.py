@@ -12,6 +12,9 @@ import random
 import datetime
 import joblib as joblib
 import numpy as np
+import pandas as pd
+from datetime import datetime
+from django.utils.timezone import now
 
 from .models import User, Medical, Appointment, Profile
 from .forms import UserRegistrationForm, LoginForm
@@ -31,37 +34,6 @@ def registerView(request):
     return render(request, 'register.html')
 
 
-
-
-
-# def registerUser(request):
-#     if request.method == 'POST':
-#         form = UserRegistrationForm(request.POST)
-#         if form.is_valid():
-#             user = form.save(commit=False)
-#             user.set_password(form.cleaned_data['password'])
-#             user.is_patient = True
-#             user.is_active = False  # Keep user inactive until email is verified
-#             # Generate OTP
-#             user.email_otp = ''.join([str(random.randint(0, 9)) for _ in range(6)])
-#             user.otp_created_at = timezone.now()
-#             user.save()
-#             # Send OTP via email
-#             send_mail(
-#                 'Your Email Verification OTP',
-#                 f'Your OTP is: {user.email_otp}',
-#                 settings.EMAIL_HOST_USER,
-#                 [user.email],
-#                 fail_silently=False,
-#             )
-            
-#             # Redirect to OTP verification page
-#             return redirect('verify_otp_page', user_id=user.id)  
-#         else:
-#             for field, errors in form.errors.items():
-#                 for error in errors:
-#                     messages.error(request, error)
-#             return redirect('reg')
         
 def registerUser(request):
     if request.method == 'POST':
@@ -149,9 +121,9 @@ def patient_home(request):
     doctor = User.objects.filter(is_doctor=True).count()
     patient = User.objects.filter(is_patient=True).count()
     appointment = Appointment.objects.filter(approved=True).count()
-    medical1 = Medical.objects.filter(medicine='See Doctor').count()
-    medical2 = Medical.objects.all().count()
-    medical3 = int(medical2) - int(medical1)
+    # medical1 = Medical.objects.filter(medicine='See Doctor').count()
+    # medical2 = Medical.objects.all().count()
+    # medical3 = int(medical2) - int(medical1)
 
     user_id = request.user.id
     user_profile = Profile.objects.filter(user_id=user_id)
@@ -159,27 +131,42 @@ def patient_home(request):
         context = {'profile_status':'YOU HAVE TO CREATE PROFILE TO USE OUR SERVICES', 'doctor':doctor, 'appointment':appointment, patient:'patient', 'drug':medical3}
         return render(request, 'patient/home.html', context)
     else:
-        context = {'status':'1', 'doctor':doctor, 'appointment':appointment, patient:'patient', 'drug':medical3}
+        context = {'status':'1', 'doctor':doctor, 'appointment':appointment, patient:'patient'}
         return render(request, 'patient/home.html', context)
+    
     
 def create_profile(request):
     if request.method == 'POST':
-        birth_date = request.POST['birth_date']
+        # Convert birth_date from string to datetime object
+        birth_date = datetime.strptime(request.POST['birth_date'], "%Y-%m-%d").date()
         country = request.POST['country']
         gender = request.POST['gender']
         user_id = request.user.id
 
-        Profile.objects.filter(id = user_id).create(user_id=user_id, birth_date=birth_date, gender=gender,country=country)
-        messages.success(request, 'Your Profile Was Created Successfully')
-        return redirect('patient')
+        age = calculate_age(birth_date)  # Calculate age
+
+        if age < 18:
+            # If user is under 18
+            messages.warning(request, 'You are under 18. Please visit a doctor for your diagnosis.')
+            return redirect('patient')  
+        else:
+            # Proceed with profile creation for users 18 and older
+            Profile.objects.filter(id=user_id).create(user_id=user_id, birth_date=birth_date, gender=gender, country=country)
+            messages.success(request, 'Your Profile Was Created Successfully')
+            return redirect('patient')
     else:
         user_id = request.user.id
         users = Profile.objects.filter(user_id=user_id)
-        users = {'users':users}
-        choice = ['1','0']
+        users = {'users': users}
+        choice = ['1', '0']
         gender = ["Male", "Female"]
-        context = {"users": {"users":users}, "choice":{"choice":choice}, "gender":gender}
-        return render(request, 'patient/create_profile.html', context)	
+        context = {"users": users, "choice": choice, "gender": gender}
+        return render(request, 'patient/create_profile.html', context)
+    
+def calculate_age(birth_date):
+    """Calculate age based on the birth_date."""
+    today = now().date()
+    return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
 
     
 
@@ -215,19 +202,91 @@ def MakePrediction(request):
     # Prepare data for prediction
     test = np.array(list_c).reshape(1, -1)
 
-    # Load the model and predict
+    # Load the model and prediction
     clf = joblib.load('model/final_rf_classifier.pkl')
     prediction = clf.predict(test)
     result = prediction[0]  
 
     print('Predicted disease:', result)
-    
+
     a = Medical(s1=s1, s2=s2, s3=s3, s4=s4, s5=s5, disease=result, patient_id=id)
+
+    # Read the disease treatment data
+    disease_treatment_df = pd.read_csv('Disease_treatment.csv')
+
+     # Check if the predicted disease is in the CSV file and retrieve treatment info
+    if result in disease_treatment_df['Disease'].values:
+        treatment_info = disease_treatment_df[disease_treatment_df['Disease'] == result].iloc[0]
+        a.description = treatment_info['Description']
+        a.diet = treatment_info['Diet']
+        a.medication = treatment_info['Medication']
+        precautions = [treatment_info[f'Precaution_{i+1}'] for i in range(4)]
+        a.precaution = ', '.join(precautions)
+
+    
+
+   # Check if the predicted disease is in the CSV file and retrieve treatment info
+    if result in disease_treatment_df['Disease'].values:
+        treatment_info = disease_treatment_df[disease_treatment_df['Disease'] == result].iloc[0]
+        print(f"Disease: {result}")
+        print(f"Description: {treatment_info['Description']}")
+        print(f"Diet: {treatment_info['Diet']}")
+        print(f"Medication: {treatment_info['Medication']}")
+        print("Precautions:")
+        for i in range(4):
+            print(f"  {treatment_info[f'Precaution_{i+1}']}")
+
+    else:
+        print(f"Disease: {result}")
+        print("No treatment information available")
+    
+  
     a.save()
 
    
 
     return JsonResponse({'status': result})
+
+
+
+
+
+
+
+@login_required
+def disease_advice(request):
+    user_id = request.user.id
+    disease_name = request.GET.get('disease')  # Retrieve the 'disease' from GET parameters
+
+    if not disease_name:
+        return render(request, 'patient/disease_advice.html', {'status': 'error', 'message': 'No disease specified.'})
+
+    try:
+        medical_record = Medical.objects.get(disease=disease_name, patient_id=user_id)
+
+        # Check if any of the advice fields are empty or null
+        if not (medical_record.description and medical_record.diet and medical_record.medication and medical_record.precaution):
+            context = {
+                'status': 'incomplete',
+                'disease': medical_record.disease,
+                'message': 'Advice not available. Please consult your doctor for more information.'
+            }
+        else:
+            context = {
+                'status': 'success',
+                'disease': medical_record.disease,
+                'description': medical_record.description,
+                'diet': medical_record.diet,
+                'medication': medical_record.medication,
+                'precautions': medical_record.precaution,
+            }
+    except Medical.DoesNotExist:
+        context = {'status': 'not_found', 'message': 'No record found for this disease'}
+    except Exception as e:
+        context = {'status': 'error', 'message': str(e)}
+
+    return render(request, 'patient/disease_advice.html', context)
+
 
 
 def patient_result(request):

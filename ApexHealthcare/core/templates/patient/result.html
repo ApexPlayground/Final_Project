@@ -6,14 +6,14 @@
       <!-- Disease List -->
       <div class="row justify-content-center">
         <div class="col-sm-10">
-          <h2 class="text-center bg-primary p-4 rounded">List Of Diagnosed Diseases</h2>
+          <h2 class="text-center bg-dark text-light p-4 rounded">List Of Diagnosed Diseases</h2>
           <div class="table-responsive">
             <table class="table table-hover">
               <thead>
                 <tr>
                   <th scope="col">Name</th>
                   <th scope="col">Disease</th>
-                  <th scope="col">Medicine</th>
+                  <th scope="col">Disease Advice</th>
                   <th scope="col">Appointment</th>
                 </tr>
               </thead>
@@ -25,11 +25,7 @@
                     <td>{{ d.patient.username }}</td>
                     <td>{{ d.disease }}</td>
                     <td>
-                      {% if d.medicine == '' %}
-                        Yet Recommended
-                      {% else %}
-                        {{ d.medicine }}
-                      {% endif %}
+                      <a href="{% url 'disease_advice' %}?disease={{ d.disease }}" class="btn btn-primary">Get Advice</a>
                     </td>
                     <td>
                       <button class="btn btn-success btn-sm btn_ment" type="button" data-sid="{{ d.id }}">Request</button>

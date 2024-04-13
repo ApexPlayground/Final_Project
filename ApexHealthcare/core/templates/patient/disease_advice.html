@@ -1,0 +1,53 @@
+{% extends 'patient/base.html' %}
+
+{% block body %}
+  <div id="content-wrapper" class="py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          {% if status == 'success' %}
+            <div class="card shadow">
+              <div class="card-header bg-primary text-white">
+                <h2 class="h3 p-4 text-center">Disease Advice for {{ disease }}</h2>
+              </div>
+              <div class="card-body">
+                <p>
+                  <strong>Description:</strong> {{ description }}
+                </p>
+                <p>
+                  <strong>Diet:</strong> {{ diet }}
+                </p>
+                <p>
+                  <strong>Medication:</strong> {{ medication }}
+                </p>
+                <p>
+                  <strong>Precautions:</strong> {{ precautions }}
+                </p>
+              </div>
+            </div>
+          {% elif status == 'not_found' %}
+            <div class="alert alert-warning" role="alert">
+              <h2 class="h3">No Advice Found</h2>
+              <p>{{ message }}</p>
+            </div>
+          {% elif status == 'incomplete' %}
+            <div class="alert alert-primary" role="alert">
+              <h2 class="h3 text-center">Advice Unavailable</h2>
+              <p class="text-center">{{ message }}</p>
+            </div>
+          {% elif status == 'error' %}
+            <div class="alert alert-danger" role="alert">
+              <h2 class="h3">Error</h2>
+              <p>{{ message }}</p>
+            </div>
+          {% else %}
+            <div class="alert alert-secondary" role="alert">
+              <h2 class="h3">Invalid Request</h2>
+              <p>{{ message }}</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
