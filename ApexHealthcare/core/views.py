@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 from datetime import datetime
 from django.utils.timezone import now
-
+from datetime import timedelta
 from .models import User, Medical, Appointment, Profile
 from .forms import UserRegistrationForm, LoginForm
 
@@ -72,7 +72,7 @@ def verify_otp(request, user_id):
     if request.method == 'POST':
         otp = request.POST.get('otp')
         # Check if OTP is correct and not expired 
-        if user.email_otp == otp and (timezone.now() - user.otp_created_at) <= datetime.timedelta(minutes=5):
+        if user.email_otp == otp and (timezone.now() - user.otp_created_at) <= timedelta(minutes=5):
             user.email_verified = True
             user.is_active = True
             user.email_otp = ''  
@@ -87,7 +87,7 @@ def verify_otp(request, user_id):
 
 
     
-
+@csrf_exempt
 def loginView(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -128,7 +128,7 @@ def patient_home(request):
     user_id = request.user.id
     user_profile = Profile.objects.filter(user_id=user_id)
     if not user_profile:
-        context = {'profile_status':'YOU HAVE TO CREATE PROFILE TO USE OUR SERVICES', 'doctor':doctor, 'appointment':appointment, patient:'patient', 'drug':medical3}
+        context = {'profile_status':'YOU HAVE TO CREATE PROFILE TO USE OUR SERVICES', 'doctor':doctor, 'appointment':appointment, patient:'patient'}
         return render(request, 'patient/home.html', context)
     else:
         context = {'status':'1', 'doctor':doctor, 'appointment':appointment, patient:'patient'}
@@ -261,29 +261,42 @@ def disease_advice(request):
     if not disease_name:
         return render(request, 'patient/disease_advice.html', {'status': 'error', 'message': 'No disease specified.'})
 
-    try:
-        medical_record = Medical.objects.get(disease=disease_name, patient_id=user_id)
+    medical_records = Medical.objects.filter(disease=disease_name, patient_id=user_id)
 
-        # Check if any of the advice fields are empty or null
-        if not (medical_record.description and medical_record.diet and medical_record.medication and medical_record.precaution):
+    if not medical_records:
+        context = {'status': 'not_found', 'message': 'No record found for this disease'}
+    else:
+        # Initialize sets to store unique items
+        descriptions = set()
+        diets = set()
+        medications = set()
+        precautions = set()
+
+        for record in medical_records:
+            if record.description:
+                descriptions.add(record.description)
+            if record.diet:
+                diets.update(record.diet.split('; '))  # Assuming diets are semicolon-separated
+            if record.medication:
+                medications.update(record.medication.split('; '))  # Assuming medications are semicolon-separated
+            if record.precaution:
+                precautions.update(record.precaution.split('; '))  # Assuming precautions are semicolon-separated
+
+        if not descriptions or not diets or not medications or not precautions:
             context = {
                 'status': 'incomplete',
-                'disease': medical_record.disease,
-                'message': 'Advice not available. Please consult your doctor for more information.'
+                'disease': disease_name,
+                'message': 'Advice not available or incomplete. Please consult your doctor for more information.'
             }
         else:
             context = {
                 'status': 'success',
-                'disease': medical_record.disease,
-                'description': medical_record.description,
-                'diet': medical_record.diet,
-                'medication': medical_record.medication,
-                'precautions': medical_record.precaution,
+                'disease': disease_name,
+                'description': '; '.join(descriptions),
+                'diet': '; '.join(diets),
+                'medication': '; '.join(medications),
+                'precautions': '; '.join(precautions),
             }
-    except Medical.DoesNotExist:
-        context = {'status': 'not_found', 'message': 'No record found for this disease'}
-    except Exception as e:
-        context = {'status': 'error', 'message': str(e)}
 
     return render(request, 'patient/disease_advice.html', context)
 

@@ -7,23 +7,27 @@
         <div class="col-md-8">
           {% if status == 'success' %}
             <div class="card shadow">
-              <div class="card-header bg-primary text-white">
-                <h2 class="h3 p-4 text-center">Disease Advice for {{ disease }}</h2>
-              </div>
-              <div class="card-body">
+              <h2 class="h3 p-4 text-center text-light bg-dark rounded-top">Disease Advice for {{ disease }}</h2>
+
+              <div class="card-body font-format">
                 <p>
                   <strong>Description:</strong> {{ description }}
                 </p>
                 <p>
-                  <strong>Diet:</strong> {{ diet }}
+                  <strong>Diet:</strong> <span id="diet">{{ diet }}</span>
                 </p>
                 <p>
-                  <strong>Medication:</strong> {{ medication }}
+                  <strong>Medication:</strong> <span id="medication">{{ medication }}</span>
                 </p>
                 <p>
                   <strong>Precautions:</strong> {{ precautions }}
                 </p>
               </div>
+              <style>
+                .font-format {
+                  font-size: 18px;
+                }
+              </style>
             </div>
           {% elif status == 'not_found' %}
             <div class="alert alert-warning" role="alert">
@@ -50,4 +54,27 @@
       </div>
     </div>
   </div>
+
+  <script>
+    window.onload = function () {
+      // Function to format text by removing square brackets and making it more readable
+      function formatText(text) {
+        // Remove square brackets and trim spaces
+        let formatted = text.replace(/^\[\s*\'|\'\s*\]$/g, '').replace(/',\s*'/g, ', ')
+        return formatted
+      }
+    
+      // Get elements by ID
+      let dietElement = document.getElementById('diet')
+      let medicationElement = document.getElementById('medication')
+    
+      // Apply formatting function
+      if (dietElement) {
+        dietElement.innerText = formatText(dietElement.innerText)
+      }
+      if (medicationElement) {
+        medicationElement.innerText = formatText(medicationElement.innerText)
+      }
+    }
+  </script>
 {% endblock %}

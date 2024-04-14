@@ -11,7 +11,7 @@
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th scope="col">Name</th>
+                  <th scope="col">#</th>
                   <th scope="col">Disease</th>
                   <th scope="col">Disease Advice</th>
                   <th scope="col">Appointment</th>
@@ -21,8 +21,7 @@
                 <input type="hidden" value="{{ user.id }}" name="" id="user_id" />
                 {% for d in disease %}
                   <tr>
-                    <td class="d-none">{{ d.id }}</td>
-                    <td>{{ d.patient.username }}</td>
+                    <td>{{ forloop.counter }}
                     <td>{{ d.disease }}</td>
                     <td>
                       <a href="{% url 'disease_advice' %}?disease={{ d.disease }}" class="btn btn-primary">Get Advice</a>
@@ -35,7 +34,6 @@
               </tbody>
             </table>
           </div>
-
           <!-- Result Display -->
           <div id="appointment_result" class="text-center mt-3"></div>
         </div>

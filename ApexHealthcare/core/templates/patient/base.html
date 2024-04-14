@@ -46,14 +46,37 @@
     <div id="wrapper" style="padding-top: 50px">
       <!-- Sidebar -->
 
+      <!-- Sidebar -->
+      {% url 'patient' as patient_url %}
+      {% if request.path != patient_url %}
+        <div class="back-to-home fixed-bottom">
+          <a href="{% url 'patient' %}" class="btn btn-dark btn-circle btn-lg"><i class="fas fa-arrow-left"></i></a>
+        </div>
+      {% endif %}
+
       {% block body %}
 
       {% endblock %}
     </div>
     <!-- /#wrapper -->
 
-    <!-- Scroll to Top Button -->
-    <a class="scroll-to-top rounded" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    <style>
+      .back-to-home {
+        position: fixed;
+        left: 20px;
+        bottom: 20px;
+      }
+      
+      .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+      
+      .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+      }
+    </style>
 
     <!-- Logout Modal -->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
