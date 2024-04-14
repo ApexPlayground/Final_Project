@@ -17,7 +17,7 @@ from datetime import datetime
 from django.utils.timezone import now
 from datetime import timedelta
 from .models import User, Medical, Appointment, Profile
-from .forms import UserRegistrationForm, LoginForm
+from .forms import UserRegistrationForm, LoginForm,ProfileCreationForm, ProfileEditForm
 
 
 
@@ -113,7 +113,9 @@ def loginView(request):
                 return redirect('login')
     else:
         form = LoginForm()
-    return render(request, 'login.html', {'form': form})	
+    return render(request, 'login.html', {'form': form})
+
+
         
     
 
@@ -134,40 +136,34 @@ def patient_home(request):
         context = {'status':'1', 'doctor':doctor, 'appointment':appointment, patient:'patient'}
         return render(request, 'patient/home.html', context)
     
-    
 def create_profile(request):
     if request.method == 'POST':
-        # Convert birth_date from string to datetime object
-        birth_date = datetime.strptime(request.POST['birth_date'], "%Y-%m-%d").date()
-        country = request.POST['country']
-        gender = request.POST['gender']
-        user_id = request.user.id
-
-        age = calculate_age(birth_date)  # Calculate age
-
-        if age < 18:
-            # If user is under 18
-            messages.warning(request, 'You are under 18. Please visit a doctor for your diagnosis.')
-            return redirect('patient')  
-        else:
-            # Proceed with profile creation for users 18 and older
-            Profile.objects.filter(id=user_id).create(user_id=user_id, birth_date=birth_date, gender=gender, country=country)
+        form = ProfileCreationForm(request.POST, request.FILES)
+        if form.is_valid():
+            new_profile = form.save(commit=False)
+            new_profile.user = request.user
+            new_profile.save()
             messages.success(request, 'Your Profile Was Created Successfully')
-            return redirect('patient')
+            return redirect('patient')  # Redirect after successful profile creation
+        else:
+            print("Form errors:", form.errors)  # Log form errors if not valid
     else:
-        user_id = request.user.id
-        users = Profile.objects.filter(user_id=user_id)
-        users = {'users': users}
-        choice = ['1', '0']
-        gender = ["Male", "Female"]
-        context = {"users": users, "choice": choice, "gender": gender}
-        return render(request, 'patient/create_profile.html', context)
+        form = ProfileCreationForm()  # If not POST, provide an empty form
+    return render(request, 'patient/create_profile.html', {'form': form})
     
-def calculate_age(birth_date):
-    """Calculate age based on the birth_date."""
-    today = now().date()
-    return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+    
+@login_required
+def profile_edit(request):
+    if request.method == 'POST':
+        form = ProfileEditForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile was updated successfully!')
+            return redirect('edit_profile')  
+    else:
+        form = ProfileEditForm(instance=request.user)  
 
+    return render(request, 'patient/edit_profile.html', {'form': form})
     
 
 def diagnosis(request):

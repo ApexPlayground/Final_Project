@@ -65,14 +65,11 @@ class Appointment(models.Model):
 
 
 class Profile(models.Model):
-    # One-to-one relationship with the User model
-    user = models.OneToOneField(User, on_delete=models.CASCADE) 
-    # Field to store the user's avatar image
-    avatar = models.ImageField(upload_to='', default='profile/avatar.png', blank=True) 
-    birth_date = models.DateField(default='None')  # Field to store the user's birth date
-    gender = models.CharField(max_length=255)  # Field to store the user's gender
-    # Field to store the user's country, default is set to Ireland
-    country = models.CharField(max_length=255, default='Ireland')  
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    avatar = models.ImageField(upload_to='profiles/', default='profile/avatar.png', blank=True)
+    birth_date = models.DateField(null=True, blank=True)  
+    gender = models.CharField(max_length=255, blank=True)
+    country = models.CharField(max_length=255, default='Ireland')
 
     def __str__(self):
-        return self.country  # String representation of the Profile, returns the country name
+        return self.country

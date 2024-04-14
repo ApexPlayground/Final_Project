@@ -6,11 +6,11 @@
     <div class="row justify-content-center">
       <div class="col-md-6">
         <div class="card mb-3 shadow">
-          <div class="bg-primary text-white text-center m-3 rounded p-4">
+          <div class="bg-dark text-white text-center m-3 rounded p-4">
             <h4>Create Your Profile</h4>
           </div>
           <div class="card-body">
-            <form action="" method="POST">
+            <form action="{% url 'create_profile' %}" method="POST" enctype="multipart/form-data">
               {% csrf_token %}
               <div class="mb-3">
                 <label for="birth_date" class="form-label">Date of Birth</label>
@@ -29,10 +29,23 @@
                 <input type="text" class="form-control" id="country" name="country" placeholder="Country" required />
               </div>
 
+              <div class="mb-3">
+                <label for="avatar" class="form-label">Profile Picture</label>
+                <input type="file" id="avatar" class="form-control" name="avatar" />
+              </div>
+
               <button type="submit" class="btn btn-success btn-lg btn-block">Save</button>
             </form>
           </div>
         </div>
+        {% if form.errors %}
+          {% for field in form %}
+            {% for error in field.errors %}
+              <div class="alert alert-danger">{{ error }}</div>
+            {% endfor %}
+          {% endfor %}
+        {% endif %}
+
         {% if messages %}
           <div class="messages">
             {% for message in messages %}
