@@ -123,9 +123,6 @@ def patient_home(request):
     doctor = User.objects.filter(is_doctor=True).count()
     patient = User.objects.filter(is_patient=True).count()
     appointment = Appointment.objects.filter(approved=True).count()
-    # medical1 = Medical.objects.filter(medicine='See Doctor').count()
-    # medical2 = Medical.objects.all().count()
-    # medical3 = int(medical2) - int(medical1)
 
     user_id = request.user.id
     user_profile = Profile.objects.filter(user_id=user_id)
@@ -180,9 +177,14 @@ def MakePrediction(request):
     s3 = request.POST.get('s3')
     s4 = request.POST.get('s4')
     s5 = request.POST.get('s5')
+    s6 = request.POST.get('s6')
+    s7 = request.POST.get('s7')
+    s8 = request.POST.get('s8')
+    s9 = request.POST.get('s9')
+    s10 = request.POST.get('s10')
     id = request.POST.get('id')
 
-    list_b = [s1, s2, s3, s4, s5]
+    list_b = [s1, s2, s3, s4, s5, s6, s7, s8, s9, s10]
     print(list_b)
 
     list_a = ['itching', 'skin_rash', 'nodal_skin_eruptions', 'continuous_sneezing', 'shivering', 'chills', 'joint_pain', 'stomach_pain', 'acidity', 'ulcers_on_tongue', 'muscle_wasting', 'vomiting', 'burning_micturition', 'spotting_ urination', 'fatigue', 'weight_gain', 'anxiety', 'cold_hands_and_feets', 'mood_swings', 'weight_loss', 'restlessness', 'lethargy', 'patches_in_throat', 'irregular_sugar_level', 'cough', 'high_fever', 'sunken_eyes', 'breathlessness', 'sweating', 'dehydration', 'indigestion', 'headache', 'yellowish_skin', 'dark_urine', 'nausea', 'loss_of_appetite', 'pain_behind_the_eyes', 'back_pain', 'constipation', 'abdominal_pain', 'diarrhoea', 'mild_fever', 'yellow_urine', 'yellowing_of_eyes', 'acute_liver_failure', 'fluid_overload', 'swelling_of_stomach', 'swelled_lymph_nodes', 'malaise', 'blurred_and_distorted_vision', 'phlegm', 'throat_irritation', 'redness_of_eyes', 'sinus_pressure', 'runny_nose', 'congestion', 'chest_pain', 'weakness_in_limbs', 'fast_heart_rate', 'pain_during_bowel_movements', 'pain_in_anal_region', 'bloody_stool', 'irritation_in_anus', 'neck_pain', 'dizziness', 'cramps', 'bruising', 'obesity', 'swollen_legs', 'swollen_blood_vessels', 'puffy_face_and_eyes', 'enlarged_thyroid', 'brittle_nails', 'swollen_extremeties', 'excessive_hunger', 'extra_marital_contacts', 'drying_and_tingling_lips', 'slurred_speech', 'knee_pain', 'hip_joint_pain', 'muscle_weakness', 'stiff_neck', 'swelling_joints', 'movement_stiffness', 'spinning_movements', 'loss_of_balance', 'unsteadiness', 'weakness_of_one_body_side', 'loss_of_smell', 'bladder_discomfort', 'foul_smell_of urine', 'continuous_feel_of_urine', 'passage_of_gases', 'internal_itching', 'toxic_look_(typhos)', 'depression', 'irritability', 'muscle_pain', 'altered_sensorium', 'red_spots_over_body', 'belly_pain', 'abnormal_menstruation', 'dischromic _patches', 'watering_from_eyes', 'increased_appetite', 'polyuria', 'family_history', 'mucoid_sputum', 'rusty_sputum', 'lack_of_concentration', 'visual_disturbances', 'receiving_blood_transfusion', 'receiving_unsterile_injections', 'coma', 'stomach_bleeding', 'distention_of_abdomen', 'history_of_alcohol_consumption', 'fluid_overload', 'blood_in_sputum', 'prominent_veins_on_calf', 'palpitations', 'painful_walking', 'pus_filled_pimples', 'blackheads', 'scurring', 'skin_peeling', 'silver_like_dusting', 'small_dents_in_nails', 'inflammatory_nails', 'blister', 'red_sore_around_nose', 'yellow_crust_ooze']
@@ -201,16 +203,21 @@ def MakePrediction(request):
     # Load the model and prediction
     clf = joblib.load('model/final_rf_classifier.pkl')
     prediction = clf.predict(test)
-    result = prediction[0]  
+    result = prediction[0]
 
     print('Predicted disease:', result)
 
-    a = Medical(s1=s1, s2=s2, s3=s3, s4=s4, s5=s5, disease=result, patient_id=id)
+    # Create a Medical instance and save to the database
+    a = Medical(
+        s1=s1, s2=s2, s3=s3, s4=s4, s5=s5, 
+        s6=s6, s7=s7, s8=s8, s9=s9, s10=s10, 
+        disease=result, patient_id=id
+    )
 
     # Read the disease treatment data
     disease_treatment_df = pd.read_csv('Disease_treatment.csv')
 
-     # Check if the predicted disease is in the CSV file and retrieve treatment info
+    # Check if the predicted disease is in the CSV file and retrieve treatment info
     if result in disease_treatment_df['Disease'].values:
         treatment_info = disease_treatment_df[disease_treatment_df['Disease'] == result].iloc[0]
         a.description = treatment_info['Description']
@@ -219,27 +226,7 @@ def MakePrediction(request):
         precautions = [treatment_info[f'Precaution_{i+1}'] for i in range(4)]
         a.precaution = ', '.join(precautions)
 
-    
-
-   # Check if the predicted disease is in the CSV file and retrieve treatment info
-    if result in disease_treatment_df['Disease'].values:
-        treatment_info = disease_treatment_df[disease_treatment_df['Disease'] == result].iloc[0]
-        print(f"Disease: {result}")
-        print(f"Description: {treatment_info['Description']}")
-        print(f"Diet: {treatment_info['Diet']}")
-        print(f"Medication: {treatment_info['Medication']}")
-        print("Precautions:")
-        for i in range(4):
-            print(f"  {treatment_info[f'Precaution_{i+1}']}")
-
-    else:
-        print(f"Disease: {result}")
-        print("No treatment information available")
-    
-  
     a.save()
-
-   
 
     return JsonResponse({'status': result})
 
@@ -272,11 +259,11 @@ def disease_advice(request):
             if record.description:
                 descriptions.add(record.description)
             if record.diet:
-                diets.update(record.diet.split('; '))  # Assuming diets are semicolon-separated
+                diets.update(record.diet.split('; ')) 
             if record.medication:
-                medications.update(record.medication.split('; '))  # Assuming medications are semicolon-separated
+                medications.update(record.medication.split('; '))  
             if record.precaution:
-                precautions.update(record.precaution.split('; '))  # Assuming precautions are semicolon-separated
+                precautions.update(record.precaution.split('; ')) 
 
         if not descriptions or not diets or not medications or not precautions:
             context = {

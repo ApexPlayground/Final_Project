@@ -8,6 +8,11 @@
       var s3 = $('.myform #Symptom3').val()
       var s4 = $('.myform #Symptom4').val()
       var s5 = $('.myform #Symptom5').val()
+      var s6 = $('.myform #Symptom6').val()
+      var s7 = $('.myform #Symptom7').val()
+      var s8 = $('.myform #Symptom8').val()
+      var s9 = $('.myform #Symptom9').val()
+      var s10 = $('.myform #Symptom10').val()
       var id = $('.myform #user_id').val()
   
       console.log(s1)
@@ -15,15 +20,32 @@
       console.log(s3)
       console.log(s4)
       console.log(s5)
+      console.log(s6)
+      console.log(s7)
+      console.log(s8)
+      console.log(s9)
+      console.log(s10)
       console.log(id)
   
       // Count non-empty symptoms
-      var symptomCount = [s1, s2, s3, s4, s5].filter((symptom) => symptom !== '').length
+      var symptomCount = [s1, s2, s3, s4, s5, s6, s7, s8, s9, s10].filter((symptom) => symptom !== '').length
   
       if (symptomCount < 3) {
         alert('Please fill in at least three symptoms')
       } else {
-        var mydata = { id: id, s1: s1, s2: s2, s3: s3, s4: s4, s5: s5 }
+        var mydata = {
+          id: id,
+          s1: s1,
+          s2: s2,
+          s3: s3,
+          s4: s4,
+          s5: s5,
+          s6: s6,
+          s7: s7,
+          s8: s8,
+          s9: s9,
+          s10: s10
+        }
         $.ajax({
           url: "{% url 'predict' %}",
           method: 'POST',
@@ -54,20 +76,22 @@
       console.log('Prediction ID is', disease)
       console.log('User ID is', userid)
   
-      mydata = { disease: disease, userid: userid }
+      var mydata = {
+        disease: disease,
+        userid: userid
+      }
       $.ajax({
         url: "{% url 'appointment'%}",
         method: 'POST',
         data: mydata,
-  
         success: function (data) {
-          x = data.status
+          var x = data.status
           console.log('Data Sent To The Backend')
           console.log('Appointment Status Is ', x)
   
-          if (x == 'saved') {
+          if (x === 'saved') {
             $('#appointment_result').html('<div class="alert alert-success" role="alert">Appointment Was Successfully Requested</div>')
-          } else if (x == 'exist') {
+          } else if (x === 'exist') {
             $('#appointment_result').html('<div class="alert alert-warning" role="alert">Appointment Request Exist</div>')
           } else {
             $('#appointment_result').html('<div class="alert alert-danger" role="alert">Something Went Wrong</div>')
@@ -76,7 +100,7 @@
       })
     })
   
-    // Make Appointment
+    // View Symptoms
     $('#tbody').on('click', '.btn_view', function () {
       console.log('Button Symptoms Clicked')
       let disease = $(this).attr('data-sid')
@@ -85,12 +109,14 @@
       console.log('Prediction ID is', disease)
       console.log('User ID is', userid)
   
-      mydata = { disease: disease, userid: userid }
+      var mydata = {
+        disease: disease,
+        userid: userid
+      }
       $.ajax({
         url: '',
         method: 'POST',
         data: mydata,
-  
         success: function (data) {
           console.log('Data Sent To The Backend')
         }
