@@ -1,0 +1,73 @@
+<script>
+  $(document).ready(function () {
+    // CSRF token setup for AJAX
+    function getCookie(name) {
+      var cookieValue = null
+      if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';')
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim()
+          if (cookie.substring(0, name.length + 1) === name + '=') {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
+            break
+          }
+        }
+      }
+      return cookieValue
+    }
+  
+    var csrftoken = getCookie('csrftoken')
+  
+    $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+        if (!/^(GET|HEAD|OPTIONS|TRACE)$/.test(settings.type) && !this.crossDomain) {
+          xhr.setRequestHeader('X-CSRFToken', csrftoken)
+        }
+      }
+    })
+  
+    // Capture appointment ID on button click
+    $('#mytable').on('click', '.btn_plan', function () {
+      console.log('Button Appointment Clicked')
+      let appointmentId = $(this).attr('data-sid')
+      $('#appointment_id').val(appointmentId)
+      console.log('Appointment ID is', appointmentId)
+    })
+  
+    // Handle form submission
+    $('#myform').on('click', '.modal_ment', function (event) {
+      event.preventDefault()
+      console.log('Button Modal Clicked')
+      var appointmentId = $('#appointment_id').val()
+      console.log('Appointment ID is', appointmentId)
+  
+      var day = $('#day').val()
+      var time = $('#time').val()
+      console.log('Day is ', day)
+      console.log('Time is ', time)
+  
+      var mydata = { pk: appointmentId, day: day, time: time }
+      $.ajax({
+        url: "{% url 'save_appointment' %}",
+        method: 'POST',
+        data: mydata,
+        success: function (data) {
+          console.log('Data Sent To The Backend')
+          if (data.status === 'Appointment Set') {
+            alert('Appointment successfully approved!')
+            // Optionally close the modal
+            $('#form').modal('hide')
+            // Reload the page to reflect changes
+            location.reload()
+          } else {
+            alert(data.status) // Show error message
+          }
+        },
+        error: function (xhr, errmsg, err) {
+          console.log('There was an error: ' + errmsg)
+          alert('There was an error: ' + errmsg)
+        }
+      })
+    })
+  })
+</script>

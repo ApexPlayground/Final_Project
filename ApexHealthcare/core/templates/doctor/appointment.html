@@ -1,0 +1,122 @@
+{% extends 'doctor/base.html' %}
+
+{% block content %}
+  <div id="content-wrapper">
+    <div class="container-fluid">
+      <div class="card shadow mb-4 w-75 justify-content-center mx-auto">
+        <div class="card-header py-3 bg-dark">
+          <h2 class="m-0 font-weight-bold text-white text-center py-4">List of Patient Appointments</h2>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered" width="100%" cellspacing="0">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Patient</th>
+                  <th scope="col">Disease</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Day</th>
+                  <th scope="col">Time</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="mytable">
+                {% for d in appointment %}
+                  <tr id="appointment-{{ d.id }}">
+                    <td>{{ d.patient.username }}</td>
+                    <td>{{ d.medical.disease }}</td>
+                    <td>
+                      {% if d.approved %}
+                        <span class="text-success font-weight-bold">Approved</span>
+                      {% else %}
+                        <span class="text-danger font-weight-bold">Pending</span>
+                      {% endif %}
+                    </td>
+                    <td>{{ d.appointment_day|date:'M d, Y' }}</td>
+                    <td>{{ d.time }}</td>
+                    <td>
+                      {% if not d.approved %}
+                        <button class="btn btn-success mx-auto text-center btn-sm btn_plan" data-sid="{{ d.id }}" data-bs-toggle="modal" data-bs-target="#form">Approve Appointment</button>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appointment Modal -->
+      <div class="modal fade" id="form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+              <h5 class="modal-title" id="exampleModalLabel">Arrange Appointment For Patient</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" id="myform">
+              {% csrf_token %}
+              <div class="modal-body">
+                <input type="hidden" name="appointment_id" id="appointment_id" />
+                <div class="form-group">
+                  <label for="day">Day</label>
+                  <input type="date" id="day" class="form-control" name="day" required="required" />
+                </div>
+                <div class="form-group">
+                  <label for="time">Time</label>
+                  <input type="time" class="form-control" id="time" name="time" required="required" />
+                </div>
+              </div>
+              <div class="modal-footer border-top-0 d-flex justify-content-center">
+                <button type="submit" class="btn btn-success modal_ment">Submit</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- End of Appointment Modal -->
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const approveButtons = document.querySelectorAll('.btn_plan')
+      approveButtons.forEach((button) => {
+        button.addEventListener('click', function () {
+          const appointmentId = this.getAttribute('data-sid')
+          document.getElementById('appointment_id').value = appointmentId
+        })
+      })
+    
+      const form = document.getElementById('myform')
+      form.addEventListener('submit', function (event) {
+        event.preventDefault()
+        const appointmentId = document.getElementById('appointment_id').value
+        const day = document.getElementById('day').value
+        const time = document.getElementById('time').value
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    
+        fetch("{% url 'save_appointment' %}", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+          },
+          body: JSON.stringify({ pk: appointmentId, day: day, time: time })
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === 'Appointment Set' && data.approved) {
+              const row = document.getElementById(`appointment-${appointmentId}`)
+              row.remove()
+            } else {
+              console.error('Failed to approve appointment')
+            }
+          })
+          .catch((error) => console.error('Error:', error))
+      })
+    })
+  </script>
+{% endblock %}

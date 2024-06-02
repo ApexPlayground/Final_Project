@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Apex Health Solution</title>
+
+    <link href="{% static 'core/css/sb-admin.css' %}" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="{% static 'core/css/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body id="page-top">
+    <!-- headers -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3">
+      <div class="container">
+        <a class="navbar-brand text-primary" href="{% url 'doctor' %}"><h1 class="text-light">Doctor's Dashboard</h1></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if user.profile.avatar %}
+                  <img src="{{ user.profile.avatar.url }}" class="rounded-circle" style="width: 40px; height: 30px;" />
+                {% else %}
+                  <i class="fas fa-user-circle fa-w text-primary fs-4"></i>
+                {% endif %}
+              </a>
+
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li>
+                  <a class="dropdown-item">{{ user.username }}</a>
+                </li>
+
+                <li>
+                  <hr class="dropdown-divider" />
+                </li>
+                <li>
+                  <a class="dropdown-item" href="" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <style>
+      .navbar-dark .navbar-nav .nav-link.dropdown-toggle::after {
+        display: none;
+      }
+    </style>
+
+    <div id="wrapper" class="mx-auto" style="padding-top: 50px">
+      {% block body %}
+
+      {% endblock %}
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="exampleModalLabel">Ready to Leave?</h4>
+
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+          </div>
+          <div class="modal-body">Thanks for your work</div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="/logout">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% block content %}
+
+    {% endblock %}
+
+    <script src="{% static 'core/js/jquery.js' %}"></script>
+    <script src="{% static 'core/js/popper.js' %}"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    {% include 'doctor/ajax.html' %} {% block javascript %}
+
+    {% endblock %}
+  </body>
+</html>

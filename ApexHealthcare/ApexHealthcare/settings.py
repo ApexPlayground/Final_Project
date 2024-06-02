@@ -18,8 +18,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "core",  
-    
+    "core",
 ]
 
 MIDDLEWARE = [
@@ -37,7 +36,7 @@ ROOT_URLCONF = "ApexHealthcare.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / 'templates'],  
+        "DIRS": [BASE_DIR / 'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -61,7 +60,7 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': '',
         'HOST': '127.0.0.1',
-        'PORT': '3307'  
+        'PORT': '3307'
     }
 }
 
@@ -80,7 +79,8 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
-USE_TZ = True
+USE_TZ = False
+TIME_ZONE = 'Europe/Dublin'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -100,14 +100,15 @@ LOGIN_URL = 'login'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
+# Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'ogbedivine7@gmail.com'  
-EMAIL_HOST_PASSWORD = 'zukp slhw kbsg sswa'  
+EMAIL_HOST_USER = 'ogbedivine7@gmail.com'
+EMAIL_HOST_PASSWORD = 'zukp slhw kbsg sswa'
 
-
-
-
-
+# Session engine configuration
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 1209600 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False

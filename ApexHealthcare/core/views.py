@@ -42,7 +42,8 @@ def registerUser(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.phonenumber = form.cleaned_data['phonenumber']  # Save the phonenumber from the form
-            user.is_patient = True
+            user.is_doctor = True
+          #  user.is_doctor = True
             user.is_active = False  # Keep user inactive until email is verified
             # Generate OTP
             user.email_otp = ''.join([str(random.randint(0, 9)) for _ in range(6)])
@@ -316,9 +317,86 @@ def patient_appointment(request):
     return render(request, 'patient/appointment.html', context)
 
 
-
 def logoutView(request):
     logout(request)
     return redirect('login')   
-        
-        
+
+@login_required
+def doctor_home(request):
+    doctor_count = User.objects.filter(is_doctor=True).count()
+    patient_count = User.objects.filter(is_patient=True).count()
+    appointment_count = Appointment.objects.filter(approved=True).count()
+    approved_appointments = Appointment.objects.filter(approved=True)
+
+    context = {
+        'doctor': doctor_count,
+        'appointment': appointment_count,
+        'patient': patient_count,
+        'approved_appointments': approved_appointments,
+    }
+    return render(request, 'doctor/home.html', context)
+
+@login_required
+def doctor_appointment(request):
+    appointments = Appointment.objects.filter(approved=False)
+    context = {'appointment': appointments, 'status': '1'}
+    return render(request, 'doctor/appointment.html', context)
+
+
+@login_required
+@csrf_exempt
+def SaveAppointment(request):
+    if request.method == 'POST':
+        pk = request.POST.get('pk')
+        day = request.POST.get('day')
+        time = request.POST.get('time')
+        user_id = request.user.id
+
+        print(f"Received pk: {pk}, day: {day}, time: {time}, user_id: {user_id}")  # Add logging
+
+        try:
+            appointment = Appointment.objects.get(pk=pk)
+            if appointment:
+                appointment.approved = True
+                appointment.appointment_day = day
+                appointment.time = time
+                appointment.doctor_id = user_id
+                appointment.save()
+
+                # Send email notification to the patient
+                patient_email = appointment.patient.email
+                send_mail(
+                    'Appointment Approved',
+                    f'Your appointment for {appointment.medical.disease} has been approved. It is scheduled for {day} at {time}.',
+                    settings.EMAIL_HOST_USER,
+                    [patient_email],
+                    fail_silently=False,
+                )
+
+                return JsonResponse({'status': 'Appointment Set', 'approved': True})
+            else:
+                print('Appointment Not Exist')
+                return JsonResponse({'status': 'Appointment Not Exist'}) 
+        except Exception as e:
+            print(e)
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    return JsonResponse({'status': 'Invalid request method'})
+
+
+@login_required
+@csrf_exempt
+def remove_appointment(request, pk):
+    if request.method == 'POST':
+        try:
+            appointment = Appointment.objects.get(pk=pk)
+            appointment.delete()
+            messages.success(request, "Appointment successfully removed.")
+        except Appointment.DoesNotExist:
+            messages.error(request, "Appointment does not exist.")
+    return redirect('doctor')
+
+def doctorLogin(request):
+    return render(request, 'doctor.html')
+
+def about(request):
+    return render(request, 'about.html')

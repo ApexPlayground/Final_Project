@@ -37,11 +37,9 @@
                 <a class="nav-link" href="/">Home</a>
               </li>
               <li class="nav-item me-lg-3">
-                <a class="nav-link" href="">About</a>
+                <a class="nav-link" href="{% url 'about' %}">About</a>
               </li>
-              <li class="nav-item me-lg-3">
-                <a class="nav-link" href="">Doctors</a>
-              </li>
+
               <li class="nav-item me-lg-3">
                 <a class="nav-link" href="{% url 'reg' %}">Register</a>
               </li>
@@ -119,7 +117,7 @@
                 with Predictive Sickness Analysis
               </h2>
               <p class="mb-4">ApexMed is passionate about reshaping the healthcare experience for everyone. Our goal is simple: to provide accessible, free personalized healthcare solutions that is useful to the masses. With our predictive sickness analysis technology, we're helping people make more informed decisions about their health. Join us on our mission to redefine healthcare and make a real difference in people's lives.</p>
-              <a href="#" class="btn btn-dark">Learn More</a>
+              <a href="{% url 'about' %}" class="btn btn-dark">Learn More</a>
             </div>
           </div>
         </div>
@@ -131,21 +129,6 @@
     <!-- Footer -->
     <footer class="bg-dark text-light py-5">
       <div class="container">
-        <div class="row">
-          <div class="col-md-3 mb-4">
-            <h5 class="mb-3">Top Products</h5>
-          </div>
-          <div class="col-md-3 mb-4">
-            <h5 class="mb-3">Quick Links</h5>
-          </div>
-          <div class="col-md-3 mb-4">
-            <h5 class="mb-3">Features</h5>
-          </div>
-          <div class="col-md-3 mb-4">
-            <h5 class="mb-3">Resources</h5>
-          </div>
-        </div>
-
         <hr class="mt-5 mb-4" />
         <div class="row">
           <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
