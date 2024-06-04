@@ -4,27 +4,27 @@ from django.utils.crypto import get_random_string
 
 # Custom User model with additional fields for patient and doctor roles
 class User(AbstractUser):
-    is_patient = models.BooleanField(default=False)  # is a patient
-    is_doctor = models.BooleanField(default=False)  # is a doctor
-    phonenumber = models.CharField(max_length=200, null=True)  # Phone number
-    email_verified = models.BooleanField(default=False)  # Email verification status
+    is_patient = models.BooleanField(default=False)
+    is_doctor = models.BooleanField(default=False)
+    phonenumber = models.CharField(max_length=200, null=True)
+    email_verified = models.BooleanField(default=False)
     email_otp = models.CharField(max_length=6, blank=True, null=True)
     otp_created_at = models.DateTimeField(blank=True, null=True)
-    verification_token = models.CharField(max_length=100, blank=True, editable=False)  # Email verification token
+    verification_token = models.CharField(max_length=100, blank=True, editable=False)
 
     def save(self, *args, **kwargs):
         if not self.verification_token:
-            # Generate a unique verification token
+            # Generate a unique verification token if it doesn't exist
             self.verification_token = get_random_string(length=32)
         super(User, self).save(*args, **kwargs)
 
 # Medical model to store medical records and prescriptions
 class Medical(models.Model):
-    s1 = models.CharField(max_length=200)
-    s2 = models.CharField(max_length=200)
-    s3 = models.CharField(max_length=200)
-    s4 = models.CharField(max_length=200)
-    s5 = models.CharField(max_length=200)
+    s1 = models.CharField(max_length=200, blank=True, null=True)
+    s2 = models.CharField(max_length=200, blank=True, null=True)
+    s3 = models.CharField(max_length=200, blank=True, null=True)
+    s4 = models.CharField(max_length=200, blank=True, null=True)
+    s5 = models.CharField(max_length=200, blank=True, null=True)
     s6 = models.CharField(max_length=200, blank=True, null=True)
     s7 = models.CharField(max_length=200, blank=True, null=True)
     s8 = models.CharField(max_length=200, blank=True, null=True)
@@ -42,6 +42,7 @@ class Medical(models.Model):
     def __str__(self):
         return self.disease
 
+# Appointment model to manage appointments between patients and doctors
 class Appointment(models.Model):
     approved = models.BooleanField(default=False)
     time = models.CharField(max_length=200, null=True)
@@ -54,6 +55,7 @@ class Appointment(models.Model):
     def __str__(self):
         return str(self.approved)
 
+# Profile model to store additional information about the user
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='profiles/', default='profile/avatar.png', blank=True)
