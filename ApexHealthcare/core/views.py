@@ -46,6 +46,7 @@ def registerUser(request):
             user.phonenumber = form.cleaned_data['phonenumber']
             # Set user as a doctor
             user.is_doctor = True
+            #user.is_patient = True
             # Keep user inactive until email is verified
             user.is_active = False
             # Generate a 6-digit OTP for email verification
@@ -369,9 +370,9 @@ def logoutView(request):
 
 @login_required
 def doctor_home(request):
-    # Count the number of doctors and patients
+    # Count the number of doctors 
     doctor_count = User.objects.filter(is_doctor=True).count()
-    patient_count = User.objects.filter(is_patient=True).count()
+
     
     # Count the number of approved appointments
     appointment_count = Appointment.objects.filter(approved=True).count()
@@ -383,7 +384,7 @@ def doctor_home(request):
     context = {
         'doctor': doctor_count,
         'appointment': appointment_count,
-        'patient': patient_count,
+        
         'approved_appointments': approved_appointments,
     }
     
